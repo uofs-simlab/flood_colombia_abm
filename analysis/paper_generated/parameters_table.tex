@@ -1,0 +1,16 @@
+\begin{tabular}{@{}p{.24\linewidth}p{.32\linewidth}p{.36\linewidth}@{}}
+\toprule
+Component & Specification & Evidence and interpretation \\
+\midrule
+Spatial sample & 286 homes; 4 businesses; 3 schools & Supplied vector layers; mapped sample, not the complete municipality \\
+Population & 972 people; 172 three-person and 114 four-person homes & 3.4-person departmental household-size proxy; adult-anchored synthetic allocation \\
+Age composition & 268 aged 0--14; 626 aged 15--64; 78 aged 65--100 & Integer allocation from municipal 2026 projection shares; not 2010 event demography \\
+Education proxy & 93.4\% full adult education score & Departmental 2005 literacy proxy; not measured flood-risk comprehension \\
+Identity shares & 4.4\% Indigenous; 6.8\% Afro-Colombian; remainder other/no declared affiliation & National 2018 proxies with inherited categorical response rules \\
+Flood and time & 408 activations; active common footprint at hours 169--268 & Three identical layer unions; fresh $\operatorname{Unif}(10,55)$ depth per exposed query \\
+Organization level $g_{\mathrm{org}}$ & $0\leq g_{\mathrm{org}}\leq1$; $\alpha_{\mathrm{depth}}=0.5$; $\alpha_{\mathrm{social}}=0.3$ & Depth attenuation and social-score increase, respectively; weak attenuation uses $\alpha_{\mathrm{depth}}=0.1$ \\
+Shelter / healthcare & 10, 98 or 292 shelter places; 49 beds & Ceiling of nominal population percentages; exclusive protected states \\
+Rescue transport & Two boats; six people/trip; 5 km/h water, 60 km/h road & Average-throughput assumptions; no explicit boat or queue trajectories \\
+Protection and return & Two-hour minimum stranding; 12-hour minimum shelter stay & Return requires a footprint-clear home; unsafe recovered patients retain a protected place \\
+\bottomrule
+\end{tabular}

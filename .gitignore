@@ -1,0 +1,32 @@
+.svn/
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# Keep generated experiment data in SVN, not in this GitHub source mirror.
+/data_collection/*
+!/data_collection/__init__.py
+!/data_collection/data_collect.py
+*.checkpoint.json
+worker.log
+*.zip
+
+# Local build and editor artifacts.
+/build/
+/$outdir/
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
