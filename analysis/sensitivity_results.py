@@ -205,16 +205,15 @@ def generate_assets(result, metadata, out):
         "95\\% Monte Carlo interval based on Student's t distribution concerns "
         "one estimate, not all estimates "
         "jointly. The design was fixed after primary analysis and before the "
-        "sensitivity runs. It tests selected parameter values individually; it "
-        "does not measure each parameter's share of total outcome variation or "
-        "the consequences of changing several parameters together.\n"
+        "sensitivity runs. It varies selected parameter values one at a time "
+        "and does not estimate variance contributions or combined changes.\n"
     )
     (out / "sensitivity_methods_text.tex").write_text(methods, encoding="ascii")
     paragraphs = [
         f"All {count} additional runs completed the same 408-hour horizon and passed "
-        "the full hourly, household, institutional and rescue-accounting checks. "
-        "Four reference repetitions reproduced primary-study numerical outputs "
-        "exactly before distributed execution. Figure~\\ref{fig:sensitivity} and "
+        "the hourly, household, institutional and rescue-accounting checks. Four "
+        "prespecified reference repetitions reproduced the primary-study "
+        "numerical outputs exactly. Figure~\\ref{fig:sensitivity} and "
         "Table~\\ref{tab:sensitivity-summary} show how the four mortality comparisons "
         "change when individual assumptions are varied. Each effect is the "
         "second setting minus the first, in percentage points; negative values "
@@ -247,29 +246,24 @@ def generate_assets(result, metadata, out):
                              < organization_reference.first_mean_mortality_pct)
     if clinical_reversal:
         paragraphs.append(
-            "The hospital-capacity response is counterintuitive in absolute outcomes, "
-            "not merely a change of contrasts. Without organization, reducing nominal "
-            "hospital capacity from 5\\% to 1\\% lowers mean mortality from "
+            "Without organization, reducing nominal hospital capacity "
+            "from 5\\% to 1\\% changes mean mortality from "
             f"{organization_reference.first_mean_mortality_pct:.2f}\\% to "
-            f"{hospital_low.first_mean_mortality_pct:.2f}\\%. Under full organization "
+            f"{hospital_low.first_mean_mortality_pct:.2f}\\%. Under full organization, "
             f"the corresponding means are {organization_reference.second_mean_mortality_pct:.2f}\\% "
-            f"and {hospital_low.second_mean_mortality_pct:.2f}\\%. This is a response of "
-            "the implemented clinical and behavioral structure, not evidence that fewer beds improve "
-            "real health outcomes.\n"
+            f"and {hospital_low.second_mean_mortality_pct:.2f}\\%.\n"
         )
     else:
         paragraphs.append(
             "The mortality levels in each scenario help explain the hospital-capacity "
-            "results, not only the differences between scenarios. Without organization, mean mortality "
+            "results. Without organization, mean mortality "
             f"is {hospital_low.first_mean_mortality_pct:.2f}\\%, "
             f"{organization_reference.first_mean_mortality_pct:.2f}\\% and "
             f"{hospital_high.first_mean_mortality_pct:.2f}\\% at hospital capacities "
             "of 1\\%, 5\\% and 10\\%, respectively. Under full organization, "
             f"the corresponding means are {hospital_low.second_mean_mortality_pct:.2f}\\%, "
             f"{organization_reference.second_mean_mortality_pct:.2f}\\% and "
-            f"{hospital_high.second_mean_mortality_pct:.2f}\\%. "
-            "These values describe the model under its assumed care rules; they "
-            "are not measured clinical treatment effects.\n"
+            f"{hospital_high.second_mean_mortality_pct:.2f}\\%.\n"
         )
     site_reference = result.loc[
         result.contrast.eq("site") & result.factor.eq("baseline")].iloc[0]
@@ -288,12 +282,9 @@ def generate_assets(result, metadata, out):
     paragraphs.append(
         f"After Holm adjustment across all 30 tests, {significant} have "
         "$p_{\\mathrm{Holm}}$ values "
-        "below 0.05 (Appendix~\\ref{app:sensitivity}). These tests ask whether a "
-        "parameter change alters a mortality difference, not whether that difference "
-        "is itself distinguishable from zero at the tested value. A nonsignificant "
-        "change does not prove that the comparison is unaffected. The range of "
-        "estimated differences across chosen settings is a descriptive summary, "
-        "not a probability interval for real-world uncertainty.\n"
+        "below 0.05 (Appendix~\\ref{app:sensitivity}). These tests ask whether "
+        "a parameter changes a mortality contrast; they do not test whether the "
+        "contrast itself is zero. Tested-effect ranges summarize the selected settings.\n"
     )
     (out / "sensitivity_results_text.tex").write_text("\n".join(paragraphs), encoding="ascii")
     organization = result.loc[result.contrast.eq("organization") & result.factor.ne("baseline")]
@@ -326,39 +317,15 @@ def generate_assets(result, metadata, out):
     )
     fleet_text = (
         f"At three people per boat trip, increasing the far-site fleet from one "
-        f"to five boats changes mean mortality by "
-        f"{effect_interval(fleet_small)} percentage points; its change from the "
-        f"primary difference has Holm-adjusted {fleet_probability}. "
-        f"At nine people per trip, the mortality change is "
-        f"{effect_interval(fleet_large)} percentage points. "
-        + ("Its interval spans zero, so this setting does not clearly establish "
-           "a mortality benefit from the additional boats. Nor does it show that "
-           "additional boats cause harm. "
-           if fleet_large.mc95_low_pp <= 0 <= fleet_large.mc95_high_pp else
-           "This comparison remains conditional on per-trip capacity. ")
-        + ("None of the tested parameter changes produces a statistically "
-           "detected change in the fleet comparison after adjustment. "
-        if not result.loc[result.contrast.eq("fleet"), "p_change_holm_30"].lt(.05).any() else
-        "Some parameter changes alter the fleet comparison after adjustment; "
-        "the primary result is therefore not a general estimate of the benefit "
-        "of adding boats. ")
+        f"to five boats changes mean mortality by {effect_interval(fleet_small)} "
+        f"percentage points; its shift from the primary contrast has "
+        f"Holm-adjusted {fleet_probability}. At nine people per trip, the "
+        f"estimated change is {effect_interval(fleet_large)} percentage points, "
+        "with an interval spanning zero."
     )
     clinical_text = (
-        "Hospital-capacity results depend on the common hourly "
-        "injury-survival deadline and the fixed recovery-eligibility rule. "
-        "An injury continues to progress outside hospital, including while "
-        "waiting in shelter and after the flood. Evacuees are assumed to receive "
-        "off-site care under the same recovery rule without using local beds; "
-        "this access assumption is not empirically calibrated. Boundary tests "
-        "verify identical survival deadlines for nonrecovering people across "
-        "care states. Applying the same rule to every injured person does not "
-        "guarantee that adding beds lowers total mortality in every random run: "
-        "admissions, discharge and later exposure can also change. "
-        + ("The nonmonotone aggregate response must not support a recommendation "
-           "to restrict care and needs process-level interpretation. "
-           if clinical_reversal else "")
-        + "Recovery assumptions, survival deadlines and off-site access need "
-        "independent evidence before the results can guide clinical planning.\n\n"
+        "Clinical sensitivity tests vary injury progression, recovery eligibility "
+        "and off-site care under the common injury clock.\n\n"
     )
     weak_depth = result.loc[
         result.contrast.eq("organization") & result.factor.eq("attenuation")
@@ -374,21 +341,9 @@ def generate_assets(result, metadata, out):
            "This negative shift means a larger modeled mortality reduction. "
            if weak_depth.change_from_reference_pp < 0 else
            "The estimated mortality reduction is unchanged. ")
-        + "The findings for full organization do not establish "
-        "a consistent benefit from social-capital increases alone, or prove that "
-        "social capital has no effect.\n\n"
-        + site_direction + fleet_text + "\n\n" + clinical_text
-        + "The study tests selected comparisons under selected assumptions; "
-        "it does not fit the parameters or establish that the findings hold under "
-        "every plausible model. A change in the difference between settings "
-        "shows sensitivity to a parameter, not which intermediate process caused "
-        "the change. Mortality can rise similarly in both settings while their "
-        "difference changes little. Hospital-capacity tests retain the same "
-        "injury and discharge rules. Boat-capacity tests change people per trip, "
-        "not loading time, travel speed or routing. Alternative depth dynamics, "
-        "survival rules, household construction and return or discharge processes "
-        "are not tested here. Changing several assumptions together may also "
-        "produce responses not captured by these individual tests.\n",
+        + "The social-only response remains less precisely resolved across "
+        "the tested settings.\n\n"
+        + site_direction + fleet_text + "\n\n" + clinical_text,
         encoding="ascii")
     (out / "sensitivity_abstract.tex").write_text(
         f"A further {count} runs vary five assumptions one at a time. "
@@ -400,20 +355,14 @@ def generate_assets(result, metadata, out):
            "30\\% shelter capacity." if site.mc95_low_pp.gt(0).all() else
            "The mortality difference between the near and far shelters is not "
            "clearly resolved at every tested parameter value.")
-        + (" Lower hospital capacity produces an unexpected mortality response "
-           "that requires further investigation." if clinical_reversal else "")
+        + (" At the lowest hospital capacity, the organization contrast is "
+           "nonmonotone across settings." if clinical_reversal else "")
         + "\n", encoding="ascii")
     (out / "sensitivity_conclusion.tex").write_text(
-        f"The {count}-run follow-up examines how these comparisons change with "
-        "warning lead time, hospital beds, people per boat trip and the two "
-        "organization coefficients. It tests only the listed values, one "
-        "parameter at a time. Combined parameter changes and alternative model "
-        "structures remain to be examined. "
-        + ("The nonmonotone hospital response requires process-level interpretation "
-           "before policy-facing use.\n"
-           if clinical_reversal else
-           "The injury, recovery and off-site care rules also require independent "
-           "validation.\n"), encoding="ascii")
+        f"The {count}-run follow-up quantifies sensitivity of these comparisons "
+        "to warning lead time, hospital capacity, people per boat trip and the "
+        "two organization coefficients.\n",
+        encoding="ascii")
 
 
 def main():

@@ -37,8 +37,8 @@
     "tests": "Exact two-sided sign-flip tests on integer death-count changes in contrasts; Holm correction across all 30 applicable factor-level-contrast modifications."
   },
   "analysis_source_sha256": {
-    "analysis\\paper_results.py": "9f8a208ced439982056f33ae3973442cd394e1210a4955ee40cc09bc16eec1aa",
-    "analysis\\sensitivity_results.py": "113928836a8c6d6642bc71e5ac5b243b8e237c3ae698322bb80a9ccc68abaee6"
+    "analysis\\paper_results.py": "50b1cbbe0b0911335fc78a538df92554fdac56a5fcf060ad7297d1f9a2f2b35f",
+    "analysis\\sensitivity_results.py": "577687d5de4cda2ef24ae5c06b720f3666fc4cc8c71d485894b8c6c7fd10a20c"
   },
   "baseline_completion_hashes": {
     "A_org_0__seed20261026": "76f99a2f742964bbcec3caaca4b53d6f80ef67b119e50e0a5140d27aebd6e658",
@@ -220,15 +220,15 @@
   },
   "generated_sha256": {
     "sensitivity_abstract.tex": "a816dd07b84590170c1494f1c5a99c232da7de8bae1b5f9f74639749dc7c9a88",
-    "sensitivity_conclusion.tex": "f5db962e427ae42d91f967b46487f5a5cd4d49ae161ecb1b786be262d7bf89be",
+    "sensitivity_conclusion.tex": "9aed35cf3bc9c4b8705c8654a254d2c3b811afefdd8c5e8a0401ae5e4c871754",
     "sensitivity_design_numbers.tex": "c2e351317366d457608ade76bdb9140574ed86bcff9e65b8fe28632b13187237",
     "sensitivity_design_table.tex": "6e021f01c4f19455a7e43c071278f81385883dba66ff7181b4b3e17ca2f286a2",
-    "sensitivity_discussion_text.tex": "24315a188305fdd50bae6cad4bdb7cc7543c0bc03cfd087f5b64154cdb5f36fc",
+    "sensitivity_discussion_text.tex": "c7eab0f06a0a962fb932b8517ff3e2f744fad5b7f3014cd8d3b32b2a00b93751",
     "sensitivity_effects.csv": "ea8831e568235bdff49e69bd70cd7b14d2620ba5ec770427cbc0cd51e6c79bd9",
     "sensitivity_effects_table.tex": "8d3d508c7ebaddd0c1895cbe176345c00effbb8f9fe118aebf81a1af1b5576bb",
-    "sensitivity_methods_text.tex": "2f2ae4ddb9fe18087d11e74bdd6cf92cb40fc0a95cb1b20113ad98c5ac85196f",
-    "sensitivity_results_text.tex": "3c91a395f58d0aadaf96ae9ff9fd68e62169aa8666493a5d09868cf95bf2f81c",
-    "sensitivity_robustness.pdf": "112a2d25df92b38b2023140c1e856f3cdae222156cfefe1eddfd1ab8e7a15259",
+    "sensitivity_methods_text.tex": "15b3dad5f9f15c84edfeb3890be89fb6b62fc2d54f5e297b39076d4f6c6f1ad7",
+    "sensitivity_results_text.tex": "fde1a79e9252b29226357d41df036ee8ff524aa5a30e397f1d79ff7e96fa25b8",
+    "sensitivity_robustness.pdf": "72ed76dc406db3c983b4fdabce14bf958a7a4bf4705b2f61b77d319c209633dc",
     "sensitivity_run_summary.csv": "0715ec2777e782bcbc42f5da7a772a8a67b12e08d63a27fae06dde6382714e17",
     "sensitivity_summary_table.tex": "c84b15f38befc2e34cd50f4df6f891f00c55c5a832bed3247b14318c8e3aed3a"
   },

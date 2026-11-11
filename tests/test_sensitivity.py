@@ -168,7 +168,7 @@ class SensitivityStatisticsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "integer"):
             analysis.effects(reference, fractional, seeds)
 
-    def test_counterintuitive_clinical_outcomes_are_reported_as_a_limitation(self):
+    def test_clinical_sensitivity_reports_capacity_outcome_and_assumptions(self):
         reference, sensitivity, seeds = statistical_frames()
         name = design.variant_name("hospital", 1, "A_org_0")
         sensitivity.loc[sensitivity.scenario.eq(name), "Deaths"] -= 10
@@ -180,10 +180,10 @@ class SensitivityStatisticsTests(unittest.TestCase):
                 analysis.generate_assets(result, metadata, output)
             narrative = (output / "sensitivity_results_text.tex").read_text()
             discussion = (output / "sensitivity_discussion_text.tex").read_text()
-        self.assertIn("counterintuitive in absolute outcomes", narrative)
-        self.assertIn("not evidence that fewer beds improve", narrative)
-        self.assertIn("must not support a recommendation to restrict care", discussion)
-        self.assertIn("injury-survival", discussion)
+        self.assertIn("reducing nominal hospital capacity", narrative)
+        self.assertIn("from 5\\% to 1\\%", narrative)
+        self.assertIn("common injury clock", discussion)
+        self.assertIn("off-site care", discussion)
 
     def test_detected_fleet_modification_retains_both_per_trip_comparisons(self):
         reference, sensitivity, seeds = statistical_frames()
@@ -218,7 +218,7 @@ class SensitivityStatisticsTests(unittest.TestCase):
             "No difference (zero)", *[info["label"] for info in design.FACTORS.values()]})
         self.assertIn("At three people per boat trip", discussion)
         self.assertIn("At nine people per trip", discussion)
-        self.assertIn("Some parameter changes alter the fleet comparison", discussion)
+        self.assertIn("with an interval spanning zero", discussion)
         self.assertIn("0.0100", discussion)
         self.assertIn(r"$p_{\mathrm{Holm}}=0.0100$", discussion)
         self.assertIn(r"$p_{\mathrm{Holm}}$", results)
@@ -233,7 +233,7 @@ class SensitivityStatisticsTests(unittest.TestCase):
         self.assertIn("relative to no organization", abstract)
         self.assertIn("nearer shelter also continues to have lower mortality", abstract)
         self.assertIn("30\\% shelter capacity", abstract)
-        self.assertIn("does not clearly establish a mortality benefit", discussion)
+        self.assertIn("with an interval spanning zero", discussion)
         self.assertNotIn("retain their directions", abstract)
         self.assertNotIn("fleet conclusion is conditional", abstract)
 

@@ -372,16 +372,16 @@ def generate_methods_assets(metadata, out):
     write_table(out, "parameters_table.tex", ["Component", "Specification", "Evidence and interpretation"], [
         ["Spatial sample", f"{len(layers['houses'])} homes; {len(layers['businesses'])} businesses; "
          f"{len(layers['schools'])} schools",
-         "Supplied vector layers; mapped sample, not the complete municipality"],
+         "Supplied vector layers"],
         ["Population", "972 people; 172 three-person and 114 four-person homes",
          "3.4-person departmental household-size proxy; adult-anchored synthetic allocation"],
         ["Age composition", "268 aged 0--14; 626 aged 15--64; 78 aged 65--100",
-         "Integer allocation from municipal 2026 projection shares; not 2010 event demography"],
+         "Integer allocation from municipal 2026 projection shares"],
         ["Education proxy", f"{100*CAL.PERC_EDUCATION_PEOPLE:.1f}\\% full adult education score",
-         "Departmental 2005 literacy proxy; not measured flood-risk comprehension"],
+         "Departmental 2005 literacy proxy used for the education score"],
         ["Identity shares", f"{100*CAL.PERC_INDIGENA:.1f}\\% Indigenous; "
          f"{100*CAL.PERC_AFROCOLOMBIANO:.1f}\\% Afro-Colombian; remainder other/no declared affiliation",
-         "National 2018 proxies with inherited categorical response rules"],
+         "National 2018 shares mapped to inherited model categories"],
         ["Flood and time", "408 activations; active common footprint at hours 169--268",
          "Three identical layer unions; fresh $\\operatorname{Unif}(10,55)$ depth per exposed query"],
         ["Organization level $g_{\\mathrm{org}}$",
@@ -391,7 +391,7 @@ def generate_methods_assets(metadata, out):
         ["Shelter / healthcare", f"10, 98 or 292 shelter places; {capacity(parameters['healthcare_cap_limit'])} beds",
          "Ceiling of nominal population percentages; exclusive protected states"],
         ["Rescue transport", "Two boats; six people/trip; 5 km/h water, 60 km/h road",
-         "Average-throughput assumptions; no explicit boat or queue trajectories"],
+         "Route-based hourly-throughput calculation"],
         ["Protection and return", "Two-hour minimum stranding; 12-hour minimum shelter stay",
          "Return requires a footprint-clear home; unsafe recovered patients retain a protected place"],
     ], alignment)
@@ -418,8 +418,8 @@ def generate_methods_assets(metadata, out):
          "Observed boat trajectories or queue waits"],
         ["Outcome measurement", "409 states and 408 intervals per run; integer-person outcomes; endpoint readback",
          "Sub-hourly extrema or accuracy of assumed mortality thresholds"],
-        ["Repeatability", "Independent full-horizon repeats; four exact reference settings before cross-platform import",
-         "External validation or universal cross-platform identity"],
+        ["Repeatability", "Independent full-horizon repeats; prespecified references match archived outputs",
+         "External validation or universal identity across software environments"],
         ["Data integrity", "Source/input/environment manifests, output hashes and retained execution provenance",
          "Input licenses or historical provenance not yet supplied"],
     ], alignment)
@@ -455,28 +455,30 @@ def generate_methods_assets(metadata, out):
     axes[0].annotate("N", xy=(.93, .93), xytext=(.93, .79),
                      xycoords="axes fraction", ha="center",
                      arrowprops={"arrowstyle": "-|>", "color": "black"})
-    axes[0].set_title("a  Residential sample and local exposure", loc="left")
+    axes[0].set_title("a  Residential buildings and local facilities", loc="left")
     axes[1].set_xlim(489000, 529000)
     axes[1].set_ylim(1135000, 1220000)
     axes[1].add_patch(Rectangle((local[0], local[2]), local[1]-local[0], local[3]-local[2],
                                 fill=False, linestyle="--", linewidth=.8, edgecolor="#444444"))
     label_positions = [(508000, 1144500), (490000, 1157000),
-                       (505000, 1180000), (500000, 1213500)]
-    for site, label, position in zip(SITES, ["Near: 2.0 km", "Hypothetical: 38.4 km",
-                                           "Intermediate: 58.0 km", "Far: 99.9 km"], label_positions):
+                       (505000, 1180000), (492000, 1213500)]
+    for site, label, position in zip(
+            SITES, ["Nearby crossing: 2.0 km", "Hypothetical site: 38.4 km",
+                    "Intermediate site: 58.0 km", "Barranquilla: 99.9 km"],
+            label_positions):
         point = layers[site].geometry.centroid.iloc[0]
         axes[1].annotate(label, xy=(point.x, point.y), xytext=position, fontsize=7.5,
                          arrowprops={"arrowstyle": "-", "color": "#888888", "linewidth": .6})
     axes[1].text(506000, 1136000, "Santa Lucia", fontsize=8, ha="center")
     axes[1].set_title("b  Candidate shelter locations", loc="left")
     handles = [
-        Patch(facecolor="#DCEAF2", edgecolor="#7196AD", label="Supplied flood footprint"),
-        Line2D([], [], marker=".", color="#444444", linestyle="None", label="Residential sample"),
+        Patch(facecolor="#DCEAF2", edgecolor="#7196AD", label="Flood footprint"),
+        Line2D([], [], marker=".", color="#444444", linestyle="None", label="Residential buildings"),
         Line2D([], [], marker="s", color=ORANGE, linestyle="None", label="Businesses"),
         Line2D([], [], marker="^", color="#AA8800", linestyle="None", label="Schools"),
         Line2D([], [], marker="P", color=GREEN, linestyle="None", label="Healthcare"),
         Line2D([], [], marker="D", color="#8855AA", linestyle="None", label="Government"),
-        Line2D([], [], marker="*", color="black", linestyle="None", label="Candidate shelter"),
+        Line2D([], [], marker="*", color="black", linestyle="None", label="Candidate shelters"),
     ]
     fig.legend(handles=handles, loc="outside lower center", ncols=3, frameon=False, fontsize=8)
     fig.savefig(out / "study_area.pdf")
@@ -731,8 +733,8 @@ def generate_text(frame, tests, pairs, precision, out, replications):
         "Figure~\\ref{fig:ablation}) separate the effect of reducing sampled flood "
         "depths from the effect of increasing social-capital scores in the decision "
         "rules. Figure~\\ref{fig:effects} displays the mean paired differences and "
-        "their Monte Carlo intervals. An interval spanning zero is compatible with "
-        "differences in either direction; it does not prove that the settings are equivalent.\n"
+        "their Monte Carlo intervals. The social-only interval spans zero, leaving "
+        "its direction unresolved.\n"
     )
     (out / "study_organization_text.tex").write_text(organization, encoding="ascii")
     logistics = (
@@ -742,119 +744,89 @@ def generate_text(frame, tests, pairs, precision, out, replications):
         f"{near:.2f}\\% at the near site and {far:.2f}\\% at the far site. "
         f"The mean paired change from the near to the far site is {effect_text(distance_effect)}. "
         "Distance comparisons are tested separately at each shelter capacity. "
-        "A significant result at one capacity and a nonsignificant result at another "
-        "do not, by themselves, show that capacity changes the distance effect.\n\n"
+        "A significant result at one capacity and a nonsignificant result at "
+        "another do not, by themselves, show that capacity changes the distance effect.\n\n"
         f"At the far site with 10\\% shelter capacity, median mortality is "
         f"{boat1:.2f}\\% with one boat and {boat5:.2f}\\% with five boats. "
         f"The mean paired one-to-five-boat "
         f"change is {effect_text(fleet_effect)}, with within-family Holm-adjusted "
         "$p_{\\mathrm{Holm}}="
-        f"{fleet_effect.p_holm_family:.6f}$. Its absolute mean change is "
-        + ("smaller than" if abs(fleet_effect.mean_b_minus_a_pp)
-           < abs(organization_effect.mean_b_minus_a_pp) else "at least as large as")
-        + " the full-organization difference. However, the experiments use different "
-        "resources and reference conditions; without comparable costs they cannot "
-        "establish which option gives better value for money.\n"
+        f"{fleet_effect.p_holm_family:.6f}$. The experiments use different "
+        "resources and reference conditions, so these changes do not provide "
+        "a cost-effectiveness comparison.\n"
     )
     (out / "study_logistics_text.tex").write_text(logistics, encoding="ascii")
     inference = (
         f"Of the seven overall tests, {significant_families} have Holm-adjusted "
         "$p_{\\mathrm{Holm}}$ values below 0.05 (Appendix~\\ref{app:inference}). That appendix also "
-        "reports the differences in Figure~\\ref{fig:effects}, including comparisons "
-        "without statistically detected differences. All 44 pairwise comparisons are retained "
-        "in the machine-readable results.\n\n"
+        "reports all 44 pairwise comparisons, including those without detected "
+        "differences.\n\n"
         f"The largest setting-specific 95\\% Monte Carlo half-width is "
         f"{precision.mc95_half_width_pp.max():.3f} percentage points; {flagged} of 24 "
         "settings exceed the prespecified 0.5-percentage-point flag. This precision "
-        "assessment measures variability among random seeds under fixed assumptions. "
-        "It does not measure uncertainty in the assumptions or real-world outcomes. "
-        "Observing zero deaths in every sampled run would not establish zero risk.\n"
+        "intervals describe variation among seeds under fixed assumptions.\n"
     )
     (out / "study_inference_text.tex").write_text(inference, encoding="ascii")
     organization_discussion = (
         f"The mean paired mortality change from no to full organization is {effect_text(organization_effect)}. "
         f"Depth-only and social-only mortality medians are {depth:.2f}\\% and "
         f"{social:.2f}\\%, compared with {org1:.2f}\\% under both channels. "
-        + ("The depth-only median is closer to the combined-channel median than "
-           "the social-only median. This suggests that the assumed depth reduction "
-           "drives most of the modeled improvement, but similar medians do not prove "
-           "that depth-only and combined protection are equivalent. "
+        + ("These results suggest that the prescribed depth reduction accounts "
+           "for most of the modeled change. "
            if abs(depth-org1) < abs(social-org1) else
-           "Their different responses should be assessed through the reported "
-           "paired channel contrasts, not a presumed mechanism ranking. ")
-        + ("The social-only paired interval spans zero: the sampled runs do not "
-           "clearly resolve whether this change lowers or raises mortality, and "
-           "they do not prove that its effect is absent. "
+           "The paired channel contrasts distinguish the modeled responses "
+           "to the depth and social-score pathways. ")
+        + ("The social-only paired interval spans zero, leaving its direction "
+           "unresolved. "
            if social_effect.mc95_low_pp <= 0 <= social_effect.mc95_high_pp else
-           "The social-only pointwise interval excludes zero; adjusted "
-           "within-family probabilities are reported separately and the result "
-           "does not establish a universal social-capital effect. ")
-        + "The depth reduction is imposed by the researcher rather than produced "
-        "by simulated community action. These comparisons separate its consequences "
-        "from those of the social-capital scores; they do not rank the real-world "
-        "value of community interventions.\n"
+           "The social-only pointwise interval excludes zero. ")
+        + "The channel comparison isolates consequences of the model's depth "
+        "and social-score pathways.\n"
     )
     (out / "study_discussion_organization.tex").write_text(organization_discussion, encoding="ascii")
     logistic_discussion = (
         f"At 30\\% shelter capacity, moving from the near to the far site changes mean mortality by "
         f"{effect_text(distance_effect)}. At the far site, increasing the fleet from one to five boats "
         f"at 10\\% shelter capacity changes mean mortality by {effect_text(fleet_effect)}. "
-        + (f"This fleet comparison does not meet the 0.05 threshold after "
-           "Holm adjustment within its family ($p_{\\mathrm{Holm}}="
-           f"{fleet_effect.p_holm_family:.4f}$), "
-           "although its unadjusted Monte Carlo interval excludes zero. The test "
-           "adjusts for multiple comparisons, whereas the interval describes this "
-           "comparison alone; they therefore need not give the same conclusion. "
+        + (f"This fleet contrast did not meet the within-family Holm-adjusted "
+           f"threshold ($p_{{\\mathrm{{Holm}}}}={fleet_effect.p_holm_family:.4f}$), "
+           "although its unadjusted Monte Carlo interval excludes zero. "
            if fleet_effect.p_holm_family >= .05
            and not fleet_effect.mc95_low_pp <= 0 <= fleet_effect.mc95_high_pp else
-           f"The primary fleet contrast has within-family Holm-adjusted "
+           f"The fleet contrast has within-family Holm-adjusted "
            "$p_{\\mathrm{Holm}}="
-           f"{fleet_effect.p_holm_family:.4f}$; its Monte Carlo interval and "
-           "adjusted test address different inferential summaries. ")
-        + "The overall tests compare sites within each shelter capacity and fleets "
-        "within each site. Comparing their adjusted probabilities does not test whether one "
-        "resource changes the effect of another. The results depend on the assumed "
-        "routes, facility protection, injury progression and rescue-throughput rules; "
-        "they do not show that expanding capacity or fleets always improves outcomes.\n"
+           f"{fleet_effect.p_holm_family:.4f}$. ")
+        + "The interval describes this comparison; the adjusted test accounts "
+        "for multiple comparisons.\n"
     )
     (out / "study_discussion_logistics.tex").write_text(logistic_discussion, encoding="ascii")
-    process = []
-    for label, name in [("near", "D_cap30_nearby_crossing"), ("far", "D_cap30_barranquilla")]:
-        group = by[name]
-        wait = group.Stranding_hours_at_admission_mean.dropna()
-        wait_text = f"{wait.median():.2f} h" if len(wait) else "not observed"
-        process.append(
-            f"At the {label} site with 30\\% capacity, the median number of distinct "
-            f"rescued people across runs is {group.Distinct_rescued.median():.1f}, and "
-            f"median peak shelter occupancy is {group.Shelter_peak_people.median():.1f} "
-            f"of 292 places. We calculate each run's mean stranding duration among "
-            f"people admitted to shelter; the median of those means is {wait_text}. "
-            f"The shelter is full at a median of {group.Hours_shelter_full.median():.1f} "
-            f"hourly observation points per run. "
-        )
-    process.append(
-        "Stranding durations describe admitted people only; they exclude people who "
-        "were never rescued and do not separately measure queue waits or travel times. "
-        "Figure~\\ref{fig:process} shows the hourly rescue, occupancy and mortality "
-        "series for both sites. Slow transport can delay admissions early in the "
-        "event, while lack of shelter space can prevent admissions later. The total "
-        "number admitted cannot show which constraint limits rescue at each hour.\n"
+    near_process = by["D_cap30_nearby_crossing"]
+    far_process = by["D_cap30_barranquilla"]
+    near_wait = near_process.Stranding_hours_at_admission_mean.dropna().median()
+    far_wait = far_process.Stranding_hours_at_admission_mean.dropna().median()
+    process = (
+        f"At the near site with 30\\% capacity, median peak shelter occupancy was "
+        f"{near_process.Shelter_peak_people.median():.0f} of 292 places, and the "
+        f"median number of distinct people rescued was {near_process.Distinct_rescued.median():.0f}. "
+        f"The shelter was full for a median of {near_process.Hours_shelter_full.median():.0f} "
+        f"hourly observation points; median run-level mean stranding duration among "
+        f"admitted people was {near_wait:.2f} h. At the far site, median peak occupancy "
+        f"was {far_process.Shelter_peak_people.median():.0f} of 292 places, with "
+        f"{far_process.Distinct_rescued.median():.0f} distinct people rescued. The "
+        f"shelter was full for a median of {far_process.Hours_shelter_full.median():.0f} "
+        f"hourly observation points; median run-level mean stranding duration among "
+        f"admitted people was {far_wait:.2f} h. Figure~\\ref{{fig:process}} shows "
+        "the hourly trajectories alongside mortality.\n"
     )
-    (out / "study_process_text.tex").write_text("".join(process), encoding="ascii")
+    (out / "study_process_text.tex").write_text(process, encoding="ascii")
     conclusion = (
-        f"The {count}-run primary experiment separates three mechanisms often aggregated "
-        "under flood-response policy: exposure reduction, behavioural response and "
-        "access to safe shelter and care. Running the organization channels separately "
-        "distinguishes the assumed reduction in flood depth from changes to "
-        "social-capital scores. The weaker-depth-reduction scenario shows how "
-        "strongly the response depends on that physical assumption. The rescue "
-        "experiments compare shelter locations and fleet sizes at specified shelter "
-        "capacities. Their hourly records show why the number rescued is not enough "
-        "to assess response: admission timing, length of stay and stranding duration "
-        "also matter. These are findings about the study model, not proven "
-        "real-world intervention effects. Independent hazard and response data, "
-        "together with tests of alternative model structures, are needed before "
-        "the results can guide operational decisions.\n"
+        f"The {count}-run primary experiment separates exposure reduction, "
+        "behavioural response and access to safe shelter and care. The "
+        "channel-separated scenarios distinguish flood-depth attenuation from "
+        "changes to social-capital scores; weaker attenuation quantifies sensitivity "
+        "to that physical assumption. Rescue experiments compare sites and fleet "
+        "sizes at selected capacities. Hourly admissions, occupancy and stranding "
+        "duration connect these scenarios to mortality.\n"
     )
     (out / "study_conclusion.tex").write_text(conclusion, encoding="ascii")
     (out / "study_design_numbers.tex").write_text(

@@ -10,7 +10,7 @@
   },
   "analysis_source_sha256": {
     "analysis\\analyze_archive.py": "dd1b9261ccc407953aa86085742a957d0fdf98b6274c9a9829ba23619fc545d7",
-    "analysis\\paper_results.py": "9f8a208ced439982056f33ae3973442cd394e1210a4955ee40cc09bc16eec1aa"
+    "analysis\\paper_results.py": "24883a095b76da988e64e8cd8194eafc61d6b9b7ccc0e73983f6ecfafcfe411b"
   },
   "execution_evidence_sha256": {
     "executions\\d8ea8d87eb8bcb8d44dfb5b11a0d336bf2fe010fa5a9e9a8523986b7261bac03\\bridge.json": "097d9466cd7c54b18144f19799c5d3ca3fdb3290a2786bf7ab7cc8768b557957",
@@ -64,23 +64,23 @@
     "organization_table.tex": "0bc56b7aefb116982a1f5beb1200ff836a192fd43c58e3de699a849df9b6e3c3",
     "paired_effects.pdf": "90c5e1d2a373da0972e6726c2d527446130f53a9a6dc242d2581df2367f0864d",
     "pairwise_tests.csv": "1b2e6d1863041b4a81fe5c7d2202cb4e2fe70e19e10cd9e2392f27f16eaa4e13",
-    "parameters_table.tex": "466a01b660f42302f7a62516562cd1ceaeb31bc953dc0d6f2e63797a96257e14",
+    "parameters_table.tex": "c1f45b7e66ee47174b82f3c0743136dcddb72dcc59985cb4dc4ab26037bd8c28",
     "process_table.tex": "b43afe8dca0a98ae3216b94720578b5c7a428d789c606f63436b98aa941ad89a",
     "rescue_process.pdf": "1b3f1b401373a7f72db953123f86b03df3fbb23877725539f789cdc949a13135",
     "run_summary.csv": "32acb5b204ee17c93a43937ee81cf135f32a0dd61db407e55b4644edead3b872",
     "study_abstract.tex": "b7e15905b7a588094f3cbdf79986d06c2cbd19c86b709122c4cdd2d4ddb22de9",
-    "study_area.pdf": "071e42674156d30638e51b270752cb6d0f0a72b5188d37718714b5ce0fc6bbde",
-    "study_conclusion.tex": "88964ff1cbaf5af39406796e8261cc06231ff469c0ab5bc10849a515e0abf547",
+    "study_area.pdf": "7e6056bd65eaa70e750da15aa64f26064a256347a64a0d64670f7cd779e87818",
+    "study_conclusion.tex": "f1fef8d0bd82ac778c158c74fb00dbdf03c14a61d62036f798b3ee682102118d",
     "study_design_numbers.tex": "d790946c8582d6865292c09458702df6790e8b9323800801c67db49dda50f5de",
-    "study_discussion_logistics.tex": "c378500cf526a107f85e21baf71743ebfd01921531b74763487eec134e4aa776",
-    "study_discussion_organization.tex": "714105911100910d9df90eb4cfbbda7dc41406e838cd8168bd3ce028209f5088",
-    "study_inference_text.tex": "2652ec756ee881ac0c51ac79e2d03a6e6e16501e7d250e601a7a24854240fc0e",
-    "study_logistics_text.tex": "28ed2838a9c7033e083844a10ae4fe65f7daa4ac92cd8e8e894b67d13efb8ac8",
-    "study_organization_text.tex": "b33814540b7fd45ef46729dc9ce2ab6ad40a272aef6b9646a15a2afa5168b5d1",
-    "study_process_text.tex": "470941d7a463265b543cb062c4471c7748e3f55249d6c5500eaeb9838de9e154",
+    "study_discussion_logistics.tex": "e77b88db7debe6c076747800d146ba1ec0e7f74e30eb1f49712ae007a7b5fbba",
+    "study_discussion_organization.tex": "9fb0d58e172cb1101d3d5fbf06b50e3d8b6434608f7dd700e219b8d163d0cfd3",
+    "study_inference_text.tex": "d658faea65fb7856b1f720124b88dc3ea247f9ead48a815360faf63b53129bb8",
+    "study_logistics_text.tex": "f0ca3299fc918d9a0de24756b0f19e3724dc9b88bcf3248be9ddf47f09d24427",
+    "study_organization_text.tex": "8665104461e7e493b9f24c844037a0a3137eb4f49c84d4d38c9a68af37bbbd54",
+    "study_process_text.tex": "d19dc0aa087894d338100bedcfead08b113ba793a2d6dab84d50de11a4bea8dd",
     "study_results_text.tex": "af80a4821aabe1aa83f9a82e1d38110c4177256e2522763ad15f24554667ce32",
     "tests_table.tex": "44f1253824b174f1528f5b1a997e4238ce22158fba00a6a500477d9a207a006d",
-    "verification_table.tex": "20f4b2b49a5343a0872afb5064c5b6fbbfca366e780a800cb2fc964c21995de3"
+    "verification_table.tex": "d62a100a89be4df2a2ca2a42aee8228d9e4b92b4a29487ea5e4708a2e4a346b0"
   },
   "intervals_per_run": 408,
   "precision_flag_threshold_pp": 0.5,
