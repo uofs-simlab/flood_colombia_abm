@@ -1,6 +1,8 @@
-"""Opt-in rule boundaries and the bounded HPC-only TODO pilot."""
+"""Opt-in rule boundaries and the bounded structural pilot."""
 
+import io
 import copy
+from contextlib import redirect_stdout
 import inspect
 import json
 import math
@@ -196,16 +198,14 @@ class PilotContractTests(unittest.TestCase):
                 self.assertEqual(parameters, {**pilot.scenario_parameters(anchor), **changes})
                 inspect.signature(FloodModel).bind(**parameters, seed=100)
 
-    def test_host_gate_blocks_local_full_simulations(self):
-        with patch.object(pilot.platform, "node", return_value="workstation"):
-            with self.assertRaisesRegex(RuntimeError, "not locally"):
-                pilot.require_hpc()
-            with patch.object(sys, "argv", ["pilot"]):
-                with self.assertRaisesRegex(RuntimeError, "not locally"):
-                    pilot.main()
-        for name in ("richardson", "hundsdorfer", "richardson.example"):
-            with patch.object(pilot.platform, "node", return_value=name):
-                pilot.require_hpc()
+    def test_pilot_design_can_be_inspected_on_a_workstation(self):
+        with tempfile.TemporaryDirectory() as folder:
+            reference = Path(folder)
+            write_json(reference / "manifest.json", pilot.study_manifest(20, pilot.SEEDS[0]))
+            arguments = ["pilot", "--reference-batch", str(reference), "--dry-run"]
+            with patch.object(pilot.platform, "node", return_value="workstation"), \
+                    patch.object(sys, "argv", arguments), redirect_stdout(io.StringIO()):
+                pilot.main()
 
     def test_manifest_freezes_reference_and_implementation(self):
         with tempfile.TemporaryDirectory() as folder:

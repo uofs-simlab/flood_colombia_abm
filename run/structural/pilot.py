@@ -1,4 +1,4 @@
-"""HPC-only implementation pilot for the approved behavioural/clinical TODOs."""
+"""Reference-gated implementation pilot for behavioural and clinical alternatives."""
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -32,11 +32,6 @@ VARIANTS = {
 }
 
 
-def require_hpc():
-    if platform.node().split(".")[0].lower() not in ("richardson", "hundsdorfer"):
-        raise RuntimeError("Full pilot simulations must run on Richardson or Hundsdorfer, not locally.")
-
-
 def scenarios():
     return {
         f"{variant}__{anchor}": {**scenario_parameters(anchor), **changes}
@@ -53,7 +48,7 @@ def manifest(reference):
     cases = scenarios()
     metadata.update({
         "study_kind": "structural_pilot",
-        "purpose": "Author-approved implementation pilot; no policy-effect inference or submission-ready sensitivity claims.",
+        "purpose": "Exploratory implementation pilot; no policy-effect inference.",
         "scenarios": cases,
         "execution_scenarios": list(cases),
         "scenario_metadata": {
@@ -185,12 +180,9 @@ def main():
     parser.add_argument("--worker", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.worker is not None:
-        require_hpc()
         recorded = json.loads((args.worker.parent.parent / "manifest.json").read_text(encoding="utf-8"))
         worker(args.worker, lambda: manifest(Path(recorded["reference_batch"])))
         return
-    if not args.dry_run:
-        require_hpc()
     reference = args.reference_batch.resolve()
     metadata = manifest(reference)
     if args.dry_run:

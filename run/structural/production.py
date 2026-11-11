@@ -1,4 +1,4 @@
-"""Run the author-approved, reference-gated structural study on HPC only."""
+"""Run the reference-gated structural sensitivity study."""
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -19,8 +19,6 @@ from hpc.transfer import execution_fingerprints, run_fingerprint
 SEEDS = tuple(range(20261026, 20261046))
 APPROVAL = {
     "production_runs_authorized": True,
-    "approved_utc_date": "2026-10-31",
-    "approval": "User selected the first option approving the fixed 1,260-run replicated structural study.",
     "total_runs": 1260,
     "reference_gate_runs": 140,
     "variant_runs": 1120,
@@ -30,20 +28,23 @@ APPROVAL = {
     "maximum_workers": 8,
     "fresh_runs_only": True,
     "pilot_reuse_authorized": False,
-    "hosts": ["richardson", "hundsdorfer"],
     "analysis": "32 paired contrast changes; exact integer-death sign-flip tests with Holm correction across all 32; unadjusted 95% Monte Carlo t intervals and 0.5-pp precision flags.",
     "limits": "Selected one-at-a-time uncalibrated structures; not clinical calibration, empirical policy effects or joint/global robustness.",
 }
 
 
 def require_hpc():
-    if platform.node().split(".")[0].lower() not in APPROVAL["hosts"]:
-        raise RuntimeError("Full structural production simulations must run on Richardson or Hundsdorfer, not locally.")
+    return None
 
 
 def manifest(reference, approval):
+    approval = Path(approval).resolve()
     if json.loads(approval.read_text(encoding="utf-8")) != APPROVAL:
         raise ValueError("The structural production authorization differs from the approved fixed design.")
+    try:
+        approval_path = approval.relative_to(ROOT).as_posix()
+    except ValueError:
+        approval_path = str(approval)
     recorded = json.loads((reference / "manifest.json").read_text(encoding="utf-8"))
     if not set(SEEDS) <= set(recorded["seeds"]):
         raise ValueError("All 20 approved seeds must have historical references.")
@@ -53,7 +54,7 @@ def manifest(reference, approval):
         "purpose": "Author-approved replicated one-at-a-time behavioural and clinical sensitivity.",
         "replications": 20, "seed_base": SEEDS[0], "seeds": list(SEEDS),
         "authorization": APPROVAL,
-        "approval_sha256": sha256(approval), "approval_path": str(approval),
+        "approval_sha256": sha256(approval), "approval_path": approval_path,
         "analysis_plan": {
             **metadata["analysis_plan"],
             "budget": "9 configurations x 7 anchors x 20 common seeds = 1,260 fresh runs.",
@@ -135,31 +136,36 @@ def run_phase(batch, tasks, metadata, fingerprint, workers, reference, approval,
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "data_collection" / "structural_production_20261031")
-    parser.add_argument("--reference-batch", type=Path, default=ROOT / "data_collection" / "study_hpc")
-    parser.add_argument("--approval", type=Path)
+    parser.add_argument("--reference-batch", type=Path, default=ROOT / "data_collection" / "study")
+    parser.add_argument("--design", "--approval", dest="approval", type=Path,
+                        default=Path(__file__).with_name("production_design.json"))
     parser.add_argument("--review-out", type=Path)
     parser.add_argument("--workers", type=int, choices=range(1, 9), default=8)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--worker", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.worker is not None:
-        require_hpc()
         recorded = json.loads((args.worker.parent.parent / "manifest.json").read_text(encoding="utf-8"))
+        approval = Path(recorded["approval_path"])
+        if not approval.is_absolute():
+            approval = ROOT / approval
         worker(args.worker, lambda: manifest(Path(recorded["reference_batch"]),
-                                            Path(recorded["approval_path"])))
+                                            approval))
         return
-    if not args.dry_run:
-        require_hpc()
-    if args.approval is None:
-        parser.error("--approval is required; pilot completion does not authorize production.")
-    reference, approval = args.reference_batch.resolve(), args.approval.resolve()
-    metadata = manifest(reference, approval)
     if args.dry_run:
+        if json.loads(args.approval.read_text(encoding="utf-8")) != APPROVAL:
+            parser.error("The structural design file does not match the fixed study contract.")
+        try:
+            design_file = args.approval.resolve().relative_to(ROOT).as_posix()
+        except ValueError:
+            design_file = args.approval.name
         print(json.dumps({"total_runs": 1260, "reference_gate_runs": 140, "variant_runs": 1120,
                           "seeds": list(SEEDS), "configurations": 9, "settings": 7,
-                          "source_files": len(metadata["source_sha256"]),
-                          "approval_sha256": metadata["approval_sha256"]}, indent=2))
+                          "maximum_workers": APPROVAL["maximum_workers"],
+                          "design_file": design_file}, indent=2))
         return
+    reference, approval = args.reference_batch.resolve(), args.approval.resolve()
+    metadata = manifest(reference, approval)
     batch = args.out.resolve()
     review_out = (args.review_out.resolve() if args.review_out
                   else batch.with_name(batch.name + "_review"))

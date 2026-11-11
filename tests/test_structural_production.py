@@ -1,7 +1,9 @@
 """Fixed replicated structural contract and saved-output tests; no simulations."""
 
 import copy
+import io
 import json
+from contextlib import redirect_stdout
 from pathlib import Path
 import shutil
 import sys
@@ -43,13 +45,14 @@ class ContractAndEffectTests(unittest.TestCase):
         self.assertEqual(production.APPROVAL["maximum_workers"], 8)
         self.assertEqual(production.APPROVAL["variants"], production.pilot.VARIANTS)
 
-    def test_local_execution_and_local_workers_are_refused(self):
-        for args in ([], ["--worker", "unused.json"],
-                     ["--dry-run", "--worker", "unused.json"]):
-            with self.subTest(args=args), patch.object(production.platform, "node", return_value="workstation"):
-                with patch.object(sys, "argv", ["production", *args]):
-                    with self.assertRaisesRegex(RuntimeError, "not locally"):
-                        production.main()
+    def test_design_dry_run_works_without_a_cohort_or_named_host(self):
+        with patch.object(production.platform, "node", return_value="workstation"), \
+                patch.object(sys, "argv", ["production", "--dry-run"]), \
+                redirect_stdout(io.StringIO()) as output:
+            production.main()
+        design = json.loads(output.getvalue())
+        self.assertEqual(design["total_runs"], 1260)
+        self.assertEqual(design["reference_gate_runs"] + design["variant_runs"], 1260)
 
     def test_all_32_adjusted_changes_use_exact_integer_pairs(self):
         result, changes = results.effects(self.frame())

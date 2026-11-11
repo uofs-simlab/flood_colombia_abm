@@ -30,3 +30,10 @@ worker.log
 .idea/
 Thumbs.db
 .DS_Store
+
+# Local and internal artifacts excluded from the public Git release.
+/docs/Results_Explanation.pdf
+/analysis/confirmation_generated/
+/run/hpc/richardson.ps1
+/run/structural/scaled.py
+/tests/test_structural_scaling.py

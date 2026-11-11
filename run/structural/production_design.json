@@ -1,0 +1,69 @@
+{
+  "production_runs_authorized": true,
+  "total_runs": 1260,
+  "reference_gate_runs": 140,
+  "variant_runs": 1120,
+  "seeds": [
+    20261026,
+    20261027,
+    20261028,
+    20261029,
+    20261030,
+    20261031,
+    20261032,
+    20261033,
+    20261034,
+    20261035,
+    20261036,
+    20261037,
+    20261038,
+    20261039,
+    20261040,
+    20261041,
+    20261042,
+    20261043,
+    20261044,
+    20261045
+  ],
+  "anchors": [
+    "A_org_0",
+    "A_org_1",
+    "A_social_only",
+    "D_cap30_nearby_crossing",
+    "D_cap30_barranquilla",
+    "D_fleet1_barranquilla",
+    "D_fleet5_barranquilla"
+  ],
+  "variants": {
+    "reference": {},
+    "evacuation_probit": {
+      "evacuation_success_rule": "probit"
+    },
+    "injury_early": {
+      "injury_onset_scale": 0.75
+    },
+    "injury_late": {
+      "injury_onset_scale": 1.25
+    },
+    "survival_short": {
+      "survival_deadline_scale": 0.75
+    },
+    "survival_long": {
+      "survival_deadline_scale": 1.25
+    },
+    "recovery_075": {
+      "recovery_eligibility": 0.75
+    },
+    "recovery_100": {
+      "recovery_eligibility": 1.0
+    },
+    "no_offsite_care": {
+      "offsite_care": false
+    }
+  },
+  "maximum_workers": 8,
+  "fresh_runs_only": true,
+  "pilot_reuse_authorized": false,
+  "analysis": "32 paired contrast changes; exact integer-death sign-flip tests with Holm correction across all 32; unadjusted 95% Monte Carlo t intervals and 0.5-pp precision flags.",
+  "limits": "Selected one-at-a-time uncalibrated structures; not clinical calibration, empirical policy effects or joint/global robustness."
+}
