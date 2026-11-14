@@ -19,9 +19,7 @@ santa_lucia_map_data/shelter_distance_candidates/shelter_intermediate.zip
 santa_lucia_map_data/shelter_distance_candidates/shelter_nearby_crossing.zip
 ```
 
-These are study-specific spatial layers, including building inventories, candidate shelter locations, and flood footprints. The associated manuscript describes the data sources. The archives are not distributed here because the original extraction records, complete attribution details, and redistribution permissions have not been established. Obtain authorized copies from the project authors, retain their original filenames, and confirm the applicable source terms before use or redistribution.
-
-The repository's ignore rules exclude ZIP archives. Keep local input copies out of commits unless their provenance and redistribution terms have been documented and approved for release.
+These study-specific layers include building inventories, facility locations, candidate shelters, and flood footprints. The [spatial-data source note](spatial-data-sources.md) records the source and attribution associated with each layer. Download the input bundle from [GitHub Releases](https://github.com/uofs-simlab/flood_colombia_abm/releases) and extract it so that all twelve archives retain the paths listed above.
 
 ## Simulation and analysis outputs
 

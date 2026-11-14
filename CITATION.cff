@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use the Santa Lucia Flood-ABM adaptation or its study archive, cite this work."
+title: "Community flood defence and rescue logistics: an agent-based scenario analysis for Santa Lucia, Colombia"
+authors:
+  - family-names: "Sanchez"
+    given-names: "Daniel Alejandro Pineda"
+  - family-names: "Addai"
+    given-names: "Obeng A."
+  - family-names: "Spiteri"
+    given-names: "Raymond J."
+date-released: 2026-11-13
+version: "archive-2026.11.13"
+repository-code: "https://github.com/uofs-simlab/flood_colombia_abm"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Community flood defence and rescue logistics: an agent-based scenario analysis for Santa Lucia, Colombia"
+  authors:
+    - family-names: "Sanchez"
+      given-names: "Daniel Alejandro Pineda"
+    - family-names: "Addai"
+      given-names: "Obeng A."
+    - family-names: "Spiteri"
+      given-names: "Raymond J."
+  year: 2026

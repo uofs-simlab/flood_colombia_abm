@@ -35,7 +35,7 @@ This creates an incomplete study cohort for a software smoke test; it is not a r
 
 ## Data
 
-The model requires twelve Santa Lucia spatial-input archives. They are not included in this repository because their source records and redistribution permissions have not yet been established. A fresh clone can install dependencies and inspect the run design, but cannot run a simulation until the inputs are obtained and placed in the paths listed in [docs/data.md](docs/data.md). Do not redistribute copies of those files without confirming their terms and required attribution.
+Full runs use twelve spatial archives listed in [docs/data.md](docs/data.md). The study release packages these inputs separately from the source-code repository. The layer sources, QGIS processing, route calculations, and source-specific attributions are summarized in [docs/spatial-data-sources.md](docs/spatial-data-sources.md).
 
 ## Tests
 
@@ -64,4 +64,4 @@ The population is synthetic. Flood depths, protective decisions, rescue throughp
 
 ## Licensing
 
-The retained upstream Flood-ABM license notice is in [UPSTREAM-LICENSE.txt](UPSTREAM-LICENSE.txt). That notice does not by itself establish the license for every study-specific contribution or the rights to redistribute the spatial inputs. Confirm the applicable terms before reusing or redistributing those materials.
+The study code is licensed under the MIT License in [LICENSE](LICENSE). The upstream Flood-ABM notice is retained in [UPSTREAM-LICENSE.txt](UPSTREAM-LICENSE.txt). Spatial inputs retain their source-specific terms and attributions, as listed in [docs/spatial-data-sources.md](docs/spatial-data-sources.md).
